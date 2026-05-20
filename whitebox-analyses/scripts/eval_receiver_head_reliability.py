@@ -8,6 +8,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from attention_analysis.receiver_head_funcs import (
     get_3d_ar_kurtosis,
+    get_3d_ar_skewness,
+    get_3d_ar_variance,
     get_all_problems_vert_scores,
 )
 
@@ -33,6 +35,52 @@ def get_kurt_matrix(
     resp_layer_head_kurts = np.array(resp_layer_head_kurts)
     resp_layer_head_kurts[:, 0, :] = np.nan  # ignore layer 0 (no interesting attention)
     return resp_layer_head_kurts
+
+
+def get_skew_matrix(
+    model_name="qwen-14b",
+    proximity_ignore=4,
+    control_depth=False,
+):
+    resp_layer_head_verts, _ = get_all_problems_vert_scores(
+        model_name=model_name,
+        proximity_ignore=proximity_ignore,
+        control_depth=control_depth,
+    )
+
+    resp_layer_head_skews = []
+
+    for i in range(len(resp_layer_head_verts)):
+        layer_head_verts = resp_layer_head_verts[i]
+        layer_head_skews = get_3d_ar_skewness(layer_head_verts)
+        assert np.sum(np.isnan(layer_head_skews[1:, :])) == 0  # Allow nan in layer 0
+        resp_layer_head_skews.append(layer_head_skews)
+    resp_layer_head_skews = np.array(resp_layer_head_skews)
+    resp_layer_head_skews[:, 0, :] = np.nan
+    return resp_layer_head_skews
+
+
+def get_var_matrix(
+    model_name="qwen-14b",
+    proximity_ignore=4,
+    control_depth=False,
+):
+    resp_layer_head_verts, _ = get_all_problems_vert_scores(
+        model_name=model_name,
+        proximity_ignore=proximity_ignore,
+        control_depth=control_depth,
+    )
+
+    resp_layer_head_vars = []
+
+    for i in range(len(resp_layer_head_verts)):
+        layer_head_verts = resp_layer_head_verts[i]
+        layer_head_vars = get_3d_ar_variance(layer_head_verts)
+        assert np.sum(np.isnan(layer_head_vars[1:, :])) == 0  # Allow nan in layer 0
+        resp_layer_head_vars.append(layer_head_vars)
+    resp_layer_head_vars = np.array(resp_layer_head_vars)
+    resp_layer_head_vars[:, 0, :] = np.nan
+    return resp_layer_head_vars
 
 
 if __name__ == "__main__":

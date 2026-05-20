@@ -69,6 +69,14 @@ def get_3d_ar_kurtosis(layer_head_vert_scores: np.ndarray) -> np.ndarray:
     return layer_head_kurts
 
 
+def get_3d_ar_skewness(layer_head_vert_scores: np.ndarray) -> np.ndarray:
+    return stats.skew(layer_head_vert_scores, axis=2, bias=True, nan_policy="omit")
+
+
+def get_3d_ar_variance(layer_head_vert_scores: np.ndarray) -> np.ndarray:
+    return np.nanvar(layer_head_vert_scores, axis=2)
+
+
 @pkld
 def get_all_heads_vert_scores(
     text: str,
