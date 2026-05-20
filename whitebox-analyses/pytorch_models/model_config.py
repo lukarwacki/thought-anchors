@@ -69,10 +69,10 @@ MODEL_PATHS: Dict[str, ModelPath] = {
     "qwq-32b": ModelPath("qwen/qwq-32b"),
     
     # Llama models
-    "llama8": ModelPath("deepseek-ai/DeepSeek-R1-Distill-Llama-8B"),
+    "llama8": ModelPath("deepseek-ai/DeepSeek-R1-Distill-Llama-8B", local_path="/workspace/volume/models/llama-8b"),
     "llama8-base": ModelPath("meta-llama/Llama-3.1-8B"),
     "llama-v3p1-8b": ModelPath("meta-llama/Meta-Llama-3.1-8B-Instruct"),
-    "llama-8b": ModelPath("deepseek-ai/DeepSeek-R1-Distill-Llama-8B"),
+    "llama-8b": ModelPath("deepseek-ai/DeepSeek-R1-Distill-Llama-8B", local_path="/workspace/volume/models/llama-8b"),
     
     # GPT models
     "gpt-oss-20b": ModelPath("openai/gpt-oss-20b"),
