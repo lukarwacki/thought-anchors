@@ -45,7 +45,7 @@ for sample in ds["default"]:
         1 for p in saved.values()
         if "correct_base_solution" in p and "incorrect_base_solution" in p
     )
-    if complete >= 5:
+    if complete >= 20:
         break
 
 print(f"\nDone. {len(saved)} problems saved.")
