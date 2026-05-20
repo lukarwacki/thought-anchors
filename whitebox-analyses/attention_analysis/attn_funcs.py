@@ -302,7 +302,7 @@ def compute_all_attention_matrices(
         text,
         model_name=model_name,
         verbose=verbose,
-        float32=False,#model_name == "qwen-15b",
+        float32=True,#model_name == "qwen-15b",
         attn_layers=None,
         return_logits=False,
         device_map=device_map,
