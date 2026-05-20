@@ -87,8 +87,8 @@ def extract_attention_and_logits(
                     output_hidden_states=False,
                 )
 
-                model.cpu()
-                torch.cuda.empty_cache()
+            model.cpu()
+            torch.cuda.empty_cache()
 
             if token_range_to_mask is None:
                 if hasattr(outputs, "attentions") and outputs.attentions is not None:
