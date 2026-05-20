@@ -12,9 +12,8 @@ saved = {}
 for sample in ds["default"]:
     if target_model not in sample["path"].lower():
         continue
-    if sample["filename"] != "base_solution.json":
+    if sample["filename"] not in ["base_solution.json", "chunks.json"]:
         continue
-    # only correct and incorrect base solutions, not chunk subfolders
     if "chunk_" in sample["path"]:
         continue
 
@@ -24,30 +23,35 @@ for sample in ds["default"]:
     if not problem_id or not condition:
         continue
 
-    # verify it has full_cot
+    # for base_solution.json verify full_cot exists
     data = json.loads(sample["content"])
-    if "full_cot" not in data:
+    if sample["filename"] == "base_solution.json" and "full_cot" not in data:
         continue
 
-    # save to exact path the code expects
     out_dir = f"{base_dir}/{target_model}/temperature_0.6_top_p_0.95/{condition}/{problem_id}"
     os.makedirs(out_dir, exist_ok=True)
-    with open(f"{out_dir}/base_solution.json", "w") as f:
+    out_path = f"{out_dir}/{sample['filename']}"
+
+    # skip if already saved
+    if os.path.exists(out_path):
+        continue
+
+    with open(out_path, "w") as f:
         json.dump(data, f)
 
     if problem_id not in saved:
         saved[problem_id] = []
-    saved[problem_id].append(condition)
-    print(f"Saved {problem_id}/{condition}")
+    saved[problem_id].append(f"{condition}/{sample['filename']}")
+    print(f"Saved {problem_id}/{condition}/{sample['filename']}")
 
-    # stop after 5 complete problems (both conditions)
     complete = sum(
         1 for p in saved.values()
-        if "correct_base_solution" in p and "incorrect_base_solution" in p
+        if any("correct_base_solution/base_solution.json" in x for x in p)
+        and any("correct_base_solution/chunks.json" in x for x in p)
+        and any("incorrect_base_solution/base_solution.json" in x for x in p)
+        and any("incorrect_base_solution/chunks.json" in x for x in p)
     )
     if complete >= 20:
         break
 
-print(f"\nDone. {len(saved)} problems saved.")
-for pid, conditions in saved.items():
-    print(f"  {pid}: {conditions}")
+print(f"\nDone. Complete problems: {len(saved)}")
