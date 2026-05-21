@@ -21,7 +21,7 @@ class ModelLoader:
     def get_model(
         self,
         model_name: str = "qwen-14b",
-        float32: bool = True,
+        float32: bool = False,
         device_map: str = "auto",
         do_flash_attn: bool = False,
     ) -> Tuple[AutoModelForCausalLM, AutoTokenizer]:

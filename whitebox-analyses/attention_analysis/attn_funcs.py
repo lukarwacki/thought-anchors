@@ -329,7 +329,7 @@ def compute_all_attention_matrices(
                 cache_path = get_cache_path(cache_dir, text_id, model_name, layer, head)
                 Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
                 np.save(cache_path, matrix)
-
+        del result["attention_weights"][layer]
     return True
 
 
